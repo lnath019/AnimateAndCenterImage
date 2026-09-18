@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZENIVA — Thoughtfully curated for everyday wellbeing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FAF7F2;
+    --surface: #FFFFFF;
+    --surface-alt: #F1EAE0;
+    --border: #E4DACB;
+    --text: #2B2723;
+    --text-muted: #6B6459;
+    --accent: #9C8368;
+    --accent-dark: #7C6650;
+    --nav-bg: rgba(250,247,242,0.92);
+    --footer-bg: #23201B;
+    --footer-text: #EFE9E0;
+    --font-display: 'Fraunces', serif;
+    --font-sans: 'Inter', -apple-system, sans-serif;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --shadow-soft: 0 2px 16px rgba(43,39,35,0.06);
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --bg: #1C1916;
+      --surface: #262220;
+      --surface-alt: #2E2925;
+      --border: #3A342E;
+      --text: #F1EAE0;
+      --text-muted: #B8AFA4;
+      --nav-bg: rgba(28,25,22,0.9);
+      --footer-bg: #12100E;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #1C1916; --surface: #262220; --surface-alt: #2E2925; --border: #3A342E;
+    --text: #F1EAE0; --text-muted: #B8AFA4; --nav-bg: rgba(28,25,22,0.9); --footer-bg: #12100E;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--font-sans);
+    line-height:1.6; overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  }
+  img,svg{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+  .eyebrow{
+    font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent-dark); margin-bottom:14px; display:block;
+  }
+  h1,h2,h3{ font-family:var(--font-display); font-weight:500; letter-spacing:-0.01em; }
+  h2{ font-size:clamp(28px,4vw,42px); line-height:1.15; }
+  h3{ font-size:clamp(20px,2.5vw,26px); line-height:1.25; }
+  p{ color:var(--text-muted); }
+  .container{ max-width:1440px; margin:0 auto; padding:0 32px; }
+  @media (max-width:768px){ .container{ padding:0 20px; } }
+  section{ padding:96px 0; }
+  @media (max-width:768px){ section{ padding:64px 0; } }
+
+  .placeholder-media{
+    background:
+      linear-gradient(135deg, var(--surface-alt) 0%, var(--border) 100%);
+    position:relative; overflow:hidden;
+  }
+  .placeholder-media::after{
+    content: attr(data-label);
+    position:absolute; bottom:16px; left:16px;
+    font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+    color: var(--text-muted); background: rgba(255,255,255,0.6);
+    padding:4px 10px; border-radius:999px;
+  }
+  :root[data-theme="dark"] .placeholder-media::after,
+  @media (prefers-color-scheme: dark){ .placeholder-media::after{ background: rgba(0,0,0,0.4); } }
+
+  /* ---------- Announcement bar ---------- */
+  .announce{
+    background:var(--text); color:var(--bg); text-align:center;
+    font-size:12.5px; letter-spacing:.03em; padding:10px 16px;
+    position:relative;
+  }
+  .announce button{
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    color:var(--bg); opacity:.7; font-size:16px; line-height:1;
+  }
+  .announce button:hover{ opacity:1; }
+  .announce.hidden{ display:none; }
+
+  /* ---------- Navbar ---------- */
+  .navbar{
+    position:sticky; top:0; z-index:100;
+    background:transparent; transition:background .35s var(--ease), box-shadow .35s var(--ease), backdrop-filter .35s var(--ease);
+  }
+  .navbar.scrolled{
+    background:var(--nav-bg); backdrop-filter:blur(10px);
+    box-shadow:var(--shadow-soft);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 0; transition:padding .3s var(--ease);
+  }
+  .navbar.scrolled .nav-inner{ padding:14px 0; }
+  .wordmark{
+    font-family:var(--font-display); font-size:21px; letter-spacing:.08em; font-weight:500;
+  }
+  .nav-links{ display:flex; gap:40px; font-size:13.5px; font-weight:500; letter-spacing:.02em; }
+  .nav-links a{ position:relative; padding-bottom:4px; }
+  .nav-links a::after{
+    content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--text);
+    transition:width .25s var(--ease);
+  }
+  .nav-links a:hover::after{ width:100%; }
+  .nav-actions{ display:flex; align-items:center; gap:20px; }
+  .icon-btn{ position:relative; width:20px; height:20px; color:var(--text); }
+  .icon-btn svg{ width:20px; height:20px; }
+  .cart-count{
+    position:absolute; top:-8px; right:-9px; background:var(--accent); color:#fff;
+    font-size:9.5px; font-weight:700; width:15px; height:15px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .hamburger{ display:none; }
+  @media (max-width:860px){
+    .nav-links{ display:none; }
+    .hamburger{ display:block; }
+  }
+
+  /* ---------- Mobile menu ---------- */
+  .mobile-menu{
+    position:fixed; inset:0; background:var(--bg); z-index:200;
+    display:flex; flex-direction:column; padding:24px 24px 40px;
+    transform:translateX(100%); transition:transform .4s var(--ease);
+  }
+  .mobile-menu.open{ transform:translateX(0); }
+  .mobile-menu-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:56px; }
+  .mobile-menu a{
+    font-family:var(--font-display); font-size:28px; padding:14px 0; border-bottom:1px solid var(--border);
+  }
+  .mobile-menu-footer{ margin-top:auto; display:flex; gap:24px; font-size:13px; color:var(--text-muted); }
+
+  /* ---------- Cart drawer ---------- */
+  .cart-drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(400px,100%);
+    background:var(--surface); z-index:210; box-shadow:-8px 0 30px rgba(0,0,0,0.12);
+    transform:translateX(100%); transition:transform .4s var(--ease);
+    display:flex; flex-direction:column; padding:28px;
+  }
+  .cart-drawer.open{ transform:translateX(0); }
+  .cart-drawer-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; }
+  .cart-empty{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; }
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,18,16,0.4); z-index:190; opacity:0; pointer-events:none;
+    transition:opacity .35s var(--ease); backdrop-filter:blur(2px);
+  }
+  .overlay.show{ opacity:1; pointer-events:auto; }
+
+  /* ---------- Hero ---------- */
+  .hero{ position:relative; height:92vh; min-height:560px; display:flex; align-items:flex-end; }
+  .hero-media{ position:absolute; inset:0; }
+  .hero-media::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(43,39,35,0.05) 0%, rgba(43,39,35,0.55) 100%);
+  }
+  .hero-content{
+    position:relative; z-index:2; color:#fff; padding-bottom:80px; width:100%;
+  }
+  .hero h1{
+    font-size:clamp(48px,7vw,84px); line-height:1; margin-bottom:20px; color:#fff;
+  }
+  .hero p{ color:rgba(255,255,255,0.85); font-size:17px; max-width:440px; margin-bottom:32px; }
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .8s var(--ease), transform .8s var(--ease); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:600;
+    letter-spacing:.05em; text-transform:uppercase; padding:15px 30px; border-radius:2px;
+    transition:background .25s var(--ease), color .25s var(--ease), transform .2s var(--ease);
+  }
+  .btn-primary{ background:var(--text); color:var(--bg); }
+  .btn-primary:hover{ background:var(--accent-dark); transform:translateY(-1px); }
+  .btn-light{ background:#fff; color:var(--text); }
+  .btn-light:hover{ background:var(--accent); color:#fff; }
+  .btn-outline{ border:1px solid var(--text); color:var(--text); }
+  .btn-outline:hover{ background:var(--text); color:var(--bg); }
+  .btn-text{ font-size:13px; font-weight:600; letter-spacing:.03em; border-bottom:1px solid currentColor; padding-bottom:2px; }
+
+  /* ---------- Brand story (two-col) ---------- */
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+  @media (max-width:860px){ .two-col{ grid-template-columns:1fr; gap:36px; } }
+  .two-col.reverse{ direction:rtl; } .two-col.reverse > *{ direction:ltr; }
+  .media-4x5{ aspect-ratio:4/5; border-radius:var(--radius-md); }
+  .media-16x9{ aspect-ratio:16/9; border-radius:var(--radius-md); }
+
+  /* ---------- Full-width media moment ---------- */
+  .media-moment{ position:relative; height:64vh; min-height:360px; }
+  .media-moment .overlay-text{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:#fff; text-align:center; background:rgba(43,39,35,0.25);
+  }
+  .media-moment h2{ color:#fff; }
+
+  /* ---------- Category grid ---------- */
+  .cat-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  @media (max-width:960px){ .cat-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .cat-grid{ grid-template-columns:1fr; } }
+  .cat-card{ position:relative; aspect-ratio:3/4; border-radius:var(--radius-md); overflow:hidden; cursor:pointer; }
+  .cat-card .placeholder-media{ position:absolute; inset:0; transition:transform .6s var(--ease); }
+  .cat-card:hover .placeholder-media{ transform:scale(1.06); }
+  .cat-card::before{
+    content:''; position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(20,18,16,0.55) 100%);
+  }
+  .cat-label{
+    position:absolute; z-index:2; bottom:22px; left:22px; right:22px; color:#fff;
+  }
+  .cat-label h3{ color:#fff; margin-bottom:4px; }
+  .cat-label .arrow{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; margin-top:8px; transition:gap .25s var(--ease); }
+  .cat-card:hover .arrow{ gap:12px; }
+
+  /* ---------- Bestsellers / product cards ---------- */
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:44px; flex-wrap:wrap; gap:16px; }
+  .product-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }
+  @media (max-width:960px){ .product-row{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .product-row{ grid-template-columns:1fr 1fr; gap:16px; } }
+  .product-card{ position:relative; }
+  .product-media{ aspect-ratio:3/4; border-radius:var(--radius-md); position:relative; overflow:hidden; margin-bottom:16px; }
+  .product-media .placeholder-media{ position:absolute; inset:0; transition:transform .5s var(--ease); }
+  .product-card:hover .product-media .placeholder-media{ transform:scale(1.04); }
+  .wishlist-btn{
+    position:absolute; top:12px; right:12px; z-index:2; width:32px; height:32px; border-radius:50%;
+    background:rgba(255,255,255,0.85); display:flex; align-items:center; justify-content:center;
+    transition:background .2s var(--ease);
+  }
+  .wishlist-btn.active svg{ fill:var(--accent); stroke:var(--accent); }
+  .quick-add{
+    position:absolute; left:12px; right:12px; bottom:12px; z-index:2; text-align:center;
+    background:#fff; padding:11px; font-size:11.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+    border-radius:2px; opacity:0; transform:translateY(8px); transition:opacity .25s var(--ease), transform .25s var(--ease);
+  }
+  .product-card:hover .quick-add{ opacity:1; transform:translateY(0); }
+  .product-name{ font-size:14.5px; font-weight:500; margin-bottom:2px; }
+  .product-desc{ font-size:12.5px; color:var(--text-muted); margin-bottom:6px; }
+  .product-price{ font-size:14px; font-weight:600; }
+  .stars{ color:var(--accent); font-size:11px; margin-bottom:4px; letter-spacing:1px; }
+
+  /* ---------- Product story (stacked text blocks) ---------- */
+  .story-blocks{ display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+  @media (max-width:860px){ .story-blocks{ grid-template-columns:1fr; gap:40px; } }
+  .story-block{ padding:28px 0; border-top:1px solid var(--border); }
+  .story-block:first-child{ border-top:none; padding-top:0; }
+  .story-block h3{ margin-bottom:10px; }
+
+  /* ---------- Reviews ---------- */
+  .review-slider{ max-width:720px; margin:0 auto; text-align:center; }
+  .review-slide{ display:none; }
+  .review-slide.active{ display:block; animation:fadeIn .5s var(--ease); }
+  @keyframes fadeIn{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
+  .review-quote{ font-family:var(--font-display); font-size:clamp(20px,2.6vw,28px); line-height:1.4; margin-bottom:24px; color:var(--text); }
+  .review-name{ font-size:13px; font-weight:600; letter-spacing:.03em; }
+  .review-nav{ display:flex; justify-content:center; align-items:center; gap:20px; margin-top:32px; }
+  .review-nav button{ width:36px; height:36px; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:background .2s; }
+  .review-nav button:hover{ background:var(--surface-alt); }
+  .review-count{ font-size:12px; color:var(--text-muted); letter-spacing:.05em; }
+
+  /* ---------- Journal ---------- */
+  .journal-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+  @media (max-width:860px){ .journal-grid{ grid-template-columns:1fr; } }
+  .journal-card .placeholder-media{ aspect-ratio:4/3; border-radius:var(--radius-md); margin-bottom:16px; }
+  .journal-meta{ font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+
+  /* ---------- Newsletter ---------- */
+  .newsletter{ text-align:center; background:var(--surface-alt); }
+  .newsletter-form{ display:flex; max-width:440px; margin:32px auto 0; gap:0; }
+  .newsletter-form input{
+    flex:1; padding:15px 18px; border:1px solid var(--border); border-right:none; font-family:inherit; font-size:14px;
+    background:var(--surface); color:var(--text); border-radius:2px 0 0 2px;
+  }
+  .newsletter-form input:focus{ outline:2px solid var(--accent); outline-offset:-2px; }
+  .newsletter-form button{ border-radius:0 2px 2px 0; }
+  .newsletter-msg{ margin-top:14px; font-size:13px; color:var(--accent-dark); min-height:18px; }
+
+  /* ---------- Footer ---------- */
+  .footer{ background:var(--footer-bg); color:var(--footer-text); padding:80px 0 32px; }
+  .footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:40px; margin-bottom:60px; }
+  @media (max-width:768px){ .footer-grid{ grid-template-columns:1fr 1fr; gap:32px; } }
+  .footer h4{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:18px; color:rgba(239,233,224,0.55); font-weight:600; }
+  .footer a{ display:block; font-size:14px; color:var(--footer-text); opacity:.85; margin-bottom:12px; }
+  .footer a:hover{ opacity:1; text-decoration:underline; }
+  .footer-word{ font-family:var(--font-display); font-size:24px; margin-bottom:14px; }
+  .footer-bottom{ border-top:1px solid rgba(239,233,224,0.15); padding-top:24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:12.5px; opacity:.7; }
+
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="announce" id="announce">
+  Complimentary shipping on orders over Rs. 5,000
+  <button onclick="document.getElementById('announce').classList.add('hidden')" aria-label="Dismiss">×</button>
+</div>
+
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="#top" class="wordmark">ZENIVA</a>
+    <div class="nav-links">
+      <a href="#shop">Shop</a>
+      <a href="#collections">Collections</a>
+      <a href="#about">About</a>
+      <a href="#journal">Journal</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" aria-label="Search" onclick="toggleSearch(true)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+      <a class="icon-btn" aria-label="Account" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      </a>
+      <button class="icon-btn" aria-label="Cart" onclick="toggleCart(true)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h2l1 12h12l1-9H6"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="icon-btn hamburger" aria-label="Menu" onclick="toggleMenu(true)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-top">
+    <span class="wordmark">ZENIVA</span>
+    <button class="icon-btn" aria-label="Close menu" onclick="toggleMenu(false)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <a href="#shop" onclick="toggleMenu(false)">Shop</a>
+  <a href="#collections" onclick="toggleMenu(false)">Collections</a>
+  <a href="#about" onclick="toggleMenu(false)">About</a>
+  <a href="#journal" onclick="toggleMenu(false)">Journal</a>
+  <div class="mobile-menu-footer">
+    <a href="#">Account</a><a href="#" onclick="toggleCart(true);toggleMenu(false)">Cart (0)</a>
+  </div>
+</div>
+
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-head">
+    <h3>Your Bag</h3>
+    <button class="icon-btn" aria-label="Close cart" onclick="toggleCart(false)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="cart-empty">
+    <p>Your bag is currently empty.</p>
+    <button class="btn btn-outline" onclick="toggleCart(false)">Continue Shopping</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<a id="top"></a>
+
+<!-- 1. HERO -->
+<header class="hero">
+  <div class="hero-media placeholder-media" data-label="Hero lifestyle image/video"></div>
+  <div class="container hero-content">
+    <h1 class="reveal">ZENIVA</h1>
+    <p class="reveal">Thoughtfully curated products, designed to make everyday care feel a little more intentional.</p>
+    <a href="#shop" class="btn btn-light reveal">Explore Collection</a>
+  </div>
+</header>
+
+<!-- 2. BRAND STORY -->
+<section id="about" class="container">
+  <div class="two-col">
+    <div class="reveal">
+      <span class="eyebrow">The ZENIVA Approach</span>
+      <h2>We believe everyday care should feel intentional.</h2>
+      <p style="margin-top:20px;max-width:460px;">Every ZENIVA product is chosen with the same question in mind: does this genuinely earn a place in someone's daily routine? No unnecessary steps, no excess — just thoughtfully made essentials for the way people actually live.</p>
+      <a href="#journal" class="btn-text" style="margin-top:24px;display:inline-block;">Our Story</a>
+    </div>
+    <div class="media-4x5 placeholder-media reveal" data-label="Brand lifestyle image"></div>
+  </div>
+</section>
+
+<!-- 3. FULL-WIDTH MEDIA MOMENT -->
+<section class="media-moment placeholder-media" data-label="Editorial brand video">
+  <div class="overlay-text reveal">
+    <h2>Care, simplified.</h2>
+  </div>
+</section>
+
+<!-- 4. CATEGORY GRID -->
+<section id="collections" class="container">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Explore ZENIVA</span>
+      <h2>Shop by category</h2>
+    </div>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card reveal">
+      <div class="placeholder-media" data-label="Skincare"></div>
+      <div class="cat-label"><h3>Skincare</h3><span class="arrow">Explore →</span></div>
+    </div>
+    <div class="cat-card reveal">
+      <div class="placeholder-media" data-label="Body Care"></div>
+      <div class="cat-label"><h3>Body Care</h3><span class="arrow">Explore →</span></div>
+    </div>
+    <div class="cat-card reveal">
+      <div class="placeholder-media" data-label="Wellness"></div>
+      <div class="cat-label"><h3>Wellness</h3><span class="arrow">Explore →</span></div>
+    </div>
+    <div class="cat-card reveal">
+      <div class="placeholder-media" data-label="Everyday Essentials"></div>
+      <div class="cat-label"><h3>Everyday Essentials</h3><span class="arrow">Explore →</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. BESTSELLERS -->
+<section id="shop" class="container" style="background:var(--surface-alt);border-radius:16px;">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Our Edit</span>
+      <h2>The products our customers return to.</h2>
+    </div>
+    <a href="#" class="btn-text">View All</a>
+  </div>
+  <div class="product-row" id="productRow"></div>
+</section>
+
+<!-- 6. PRODUCT STORY -->
+<section class="container">
+  <div class="story-blocks">
+    <div class="media-4x5 placeholder-media reveal" data-label="Featured product"></div>
+    <div class="reveal">
+      <span class="eyebrow">Product Story</span>
+      <h2 style="margin-bottom:24px;">The Restoring Cream</h2>
+      <div class="story-block">
+        <h3>Why You'll Love It</h3>
+        <p>A weightless, deeply nourishing formula built for daily use — not just special occasions.</p>
+      </div>
+      <div class="story-block">
+        <h3>How to Use</h3>
+        <p>Apply morning and evening to clean skin. A little goes a long way.</p>
+      </div>
+      <div class="story-block">
+        <h3>What's Inside</h3>
+        <p>Naturally derived actives, free from unnecessary fillers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. LIFESTYLE BLOCK -->
+<section class="media-moment placeholder-media" data-label="Lifestyle moment">
+  <div class="overlay-text reveal">
+    <div>
+      <h2 style="margin-bottom:24px;">Thoughtful products.<br/>Intentional routines.</h2>
+      <a href="#shop" class="btn btn-light">Explore ZENIVA</a>
+    </div>
+  </div>
+</section>
+
+<!-- 8. REVIEWS -->
+<section class="container">
+  <div class="section-head" style="justify-content:center;text-align:center;flex-direction:column;">
+    <span class="eyebrow">What Our Customers Say</span>
+  </div>
+  <div class="review-slider">
+    <div class="review-slide active">
+      <p class="review-quote">"The first skincare routine I've actually stuck with. Everything just feels considered."</p>
+      <p class="review-name">— Anjali R.</p>
+    </div>
+    <div class="review-slide">
+      <p class="review-quote">"Simple, effective, and it doesn't feel like a chore. Exactly what I wanted."</p>
+      <p class="review-name">— Priya S.</p>
+    </div>
+    <div class="review-slide">
+      <p class="review-quote">"Quality is obvious from the first use. Worth every rupee."</p>
+      <p class="review-name">— Rohan M.</p>
+    </div>
+    <div class="review-slide">
+      <p class="review-quote">"My skin has never felt this balanced. ZENIVA is now a permanent part of my routine."</p>
+      <p class="review-name">— Sneha K.</p>
+    </div>
+    <div class="review-nav">
+      <button aria-label="Previous review" onclick="changeReview(-1)">←</button>
+      <span class="review-count" id="reviewCount">01 / 04</span>
+      <button aria-label="Next review" onclick="changeReview(1)">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- 9. JOURNAL -->
+<section id="journal" class="container">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">From the ZENIVA Journal</span>
+      <h2>Stories worth reading</h2>
+    </div>
+  </div>
+  <div class="journal-grid">
+    <a class="journal-card reveal">
+      <div class="placeholder-media" data-label="Article image"></div>
+      <div class="journal-meta">Skincare · 4 min read</div>
+      <h3>Building a routine that actually sticks</h3>
+    </a>
+    <a class="journal-card reveal">
+      <div class="placeholder-media" data-label="Article image"></div>
+      <div class="journal-meta">Wellness · 6 min read</div>
+      <h3>The case for doing less, better</h3>
+    </a>
+    <a class="journal-card reveal">
+      <div class="placeholder-media" data-label="Article image"></div>
+      <div class="journal-meta">Ingredients · 5 min read</div>
+      <h3>What's actually in your moisturizer</h3>
+    </a>
+  </div>
+</section>
+
+<!-- 10. NEWSLETTER -->
+<section class="newsletter">
+  <div class="container">
+    <span class="eyebrow">Stay in the Know</span>
+    <h2>Join the ZENIVA community</h2>
+    <p style="max-width:420px;margin:12px auto 0;">Product updates, inspiration, and quiet reminders to take care of yourself.</p>
+    <form class="newsletter-form" onsubmit="return subscribe(event)">
+      <input type="email" required placeholder="Email address" aria-label="Email address" />
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+    <p class="newsletter-msg" id="newsletterMsg"></p>
+  </div>
+</section>
+
+<!-- 11. FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-word">ZENIVA</div>
+        <p style="opacity:.75;max-width:280px;font-size:13.5px;">Thoughtfully curated products for everyday wellbeing.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <a href="#shop">All Products</a>
+        <a href="#shop">Bestsellers</a>
+        <a href="#collections">Collections</a>
+      </div>
+      <div>
+        <h4>About</h4>
+        <a href="#about">Our Story</a>
+        <a href="#">Contact</a>
+        <a href="#journal">Journal</a>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <a href="#">Shipping</a>
+        <a href="#">Returns</a>
+        <a href="#">FAQs</a>
+        <a href="#">Track Order</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ZENIVA. All rights reserved.</span>
+      <span style="display:flex;gap:20px;">
+        <a href="#">Privacy</a><a href="#">Terms</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---- Navbar scroll state ----
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive:true });
+
+  // ---- Mobile menu / cart drawer / overlay ----
+  const overlay = document.getElementById('overlay');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const cartDrawer = document.getElementById('cartDrawer');
+  function toggleMenu(open){
+    mobileMenu.classList.toggle('open', open);
+    overlay.classList.toggle('show', open || cartDrawer.classList.contains('open'));
+  }
+  function toggleCart(open){
+    cartDrawer.classList.toggle('open', open);
+    overlay.classList.toggle('show', open || mobileMenu.classList.contains('open'));
+  }
+  function toggleSearch(open){
+    if(open) alert('Search modal placeholder — wire up your real search index here.');
+  }
+  function closeAll(){ toggleMenu(false); toggleCart(false); }
+
+  // ---- Scroll reveal ----
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // ---- Review slider ----
+  const slides = document.querySelectorAll('.review-slide');
+  const reviewCount = document.getElementById('reviewCount');
+  let reviewIndex = 0;
+  function showReview(i){
+    slides.forEach(s => s.classList.remove('active'));
+    reviewIndex = (i + slides.length) % slides.length;
+    slides[reviewIndex].classList.add('active');
+    reviewCount.textContent = String(reviewIndex+1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+  }
+  function changeReview(dir){ showReview(reviewIndex + dir); }
+
+  // ---- Newsletter ----
+  function subscribe(e){
+    e.preventDefault();
+    document.getElementById('newsletterMsg').textContent = "You're on the list — thank you for joining ZENIVA.";
+    e.target.reset();
+    return false;
+  }
+
+  // ---- Product cards (generated + wishlist + cart) ----
+  const products = [
+    { name:'Restoring Night Cream', desc:'Rich overnight repair', price:'Rs. 2,450' },
+    { name:'Gentle Foaming Cleanser', desc:'Daily balance, no strip', price:'Rs. 1,350' },
+    { name:'Vitamin C Serum', desc:'Brightening, lightweight', price:'Rs. 2,850' },
+    { name:'Calming Body Oil', desc:'For everyday softness', price:'Rs. 1,950' },
+  ];
+  const row = document.getElementById('productRow');
+  let cartCount = 0;
+  products.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'product-card reveal';
+    card.innerHTML = `
+      <div class="product-media">
+        <div class="placeholder-media" data-label="Product photo"></div>
+        <button class="wishlist-btn" aria-label="Add to wishlist" onclick="this.classList.toggle('active')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-9.5-9C.7 8 2 4.5 5.5 4a5 5 0 0 1 6.5 2.5A5 5 0 0 1 18.5 4C22 4.5 23.3 8 21.5 12 19 16.5 12 21 12 21z"/></svg>
+        </button>
+        <button class="quick-add" onclick="addToCart()">Quick Add</button>
+      </div>
+      <div class="stars">★★★★★</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-desc">${p.desc}</div>
+      <div class="product-price">${p.price}</div>
+    `;
+    row.appendChild(card);
+    io.observe(card);
+  });
+  function addToCart(){
+    cartCount++;
+    document.getElementById('cartCount').textContent = cartCount;
+  }
+</script>
+
+</body>
+</html>

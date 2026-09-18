@@ -1,0 +1,10 @@
+{
+  "description": "Create stunning collages effortlessly with customizable templates and text overlay options, perfect for personal and professional projects.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
